@@ -1,0 +1,43 @@
+{
+  "provenance": {
+    "source": "https://raw.githubusercontent.com/DavidFuchs/mcp-uptime-kuma/main/src/server.ts",
+    "npm_package": "@davidfuchs/mcp-uptime-kuma",
+    "npm_version": "0.11.18",
+    "fetched": "2026-09-19",
+    "note": "Verbatim tool registration order from src/server.ts at the pinned version. Classification (read/write/destructive) from the tool descriptions in the same file. Re-vendor deliberately if the pin is bumped, and re-check the classification."
+  },
+  "longest_tool_name": "getMaintenanceWindows",
+  "tools": [
+    {"name": "getMonitor", "class": "read"},
+    {"name": "listMonitors", "class": "read"},
+    {"name": "listMonitorTypes", "class": "read"},
+    {"name": "getMonitorSummary", "class": "read"},
+    {"name": "getHeartbeats", "class": "read"},
+    {"name": "getSettings", "class": "read"},
+    {"name": "listHeartbeats", "class": "read"},
+    {"name": "pauseMonitor", "class": "write"},
+    {"name": "resumeMonitor", "class": "write"},
+    {"name": "createMonitor", "class": "write"},
+    {"name": "updateMonitor", "class": "write"},
+    {"name": "deleteMonitor", "class": "destructive"},
+    {"name": "listNotifications", "class": "read"},
+    {"name": "addNotification", "class": "write"},
+    {"name": "updateNotification", "class": "write"},
+    {"name": "deleteNotification", "class": "destructive"},
+    {"name": "listDockerHosts", "class": "read"},
+    {"name": "addDockerHost", "class": "write"},
+    {"name": "updateDockerHost", "class": "write"},
+    {"name": "deleteDockerHost", "class": "destructive"},
+    {"name": "testDockerHost", "class": "write"},
+    {"name": "listTags", "class": "read"},
+    {"name": "addTag", "class": "write"},
+    {"name": "deleteTag", "class": "destructive"},
+    {"name": "getMaintenanceWindows", "class": "read"},
+    {"name": "createMaintenance", "class": "write"},
+    {"name": "listStatusPages", "class": "read"},
+    {"name": "getStatusPage", "class": "read"},
+    {"name": "createStatusPage", "class": "write"},
+    {"name": "updateStatusPage", "class": "write"},
+    {"name": "deleteStatusPage", "class": "destructive"}
+  ]
+}

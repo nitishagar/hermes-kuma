@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "kuma",
+  "version": "0.1.0",
+  "description": "Uptime-Kuma monitoring for agents: the community MCP server for Uptime Kuma v2 (pinned, stdio) with curated workflow skills for incident review, status digests, and confirmation-gated maintenance.",
+  "author": {
+    "name": "nitishagar",
+    "url": "https://github.com/nitishagar"
+  },
+  "homepage": "https://github.com/nitishagar/hermes-kuma",
+  "repository": "https://github.com/nitishagar/hermes-kuma",
+  "license": "MIT",
+  "keywords": [
+    "uptime-kuma",
+    "monitoring",
+    "status",
+    "uptime",
+    "mcp",
+    "hermes",
+    "openclaw"
+  ]
+}
