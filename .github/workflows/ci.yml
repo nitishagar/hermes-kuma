@@ -1,0 +1,24 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install test dependencies
+        run: pip install pytest jsonschema pyyaml
+      - name: Offline bundle validation
+        run: python -m pytest -q
+      - name: Check the pinned upstream version still exists (informational)
+        continue-on-error: true
+        run: npm view @davidfuchs/mcp-uptime-kuma@0.11.18 version
