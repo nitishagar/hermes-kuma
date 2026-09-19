@@ -76,17 +76,15 @@ def test_no_secret_values_in_guidance_files():
     from bundle_facts import GUIDANCE_GLOBS, REPO_ROOT
 
     offenders = []
-    value_rx = re.compile(
-        r"(?P<name>" + "|".join(SECRET_ENV_VARS) + r")(?P<eq>\s*[:=]\s*)(?P<value>\S+)"
-    )
+    value_rx = re.compile(r"(?P<name>" + "|".join(SECRET_ENV_VARS) + r")(?P<eq>\s*[:=]\s*)(?P<value>.+)")
     for pattern_glob in GUIDANCE_GLOBS:
         for path in sorted(REPO_ROOT.glob(pattern_glob)):
             if not path.is_file():
                 continue
             text = path.read_text(encoding="utf-8")
             for m in value_rx.finditer(text):
-                value = m.group("value").strip("'\"")
-                is_placeholder = re.fullmatch(r"<[^>]+>", value)
+                value = m.group("value").strip().strip("'\"").strip()
+                is_placeholder = re.fullmatch(r"<.*>", value)
                 is_env_ref = value.startswith("${env:") and value.endswith("}")
                 if not (is_placeholder or is_env_ref):
                     line = text[: m.start()].count("\n") + 1
