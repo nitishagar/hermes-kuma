@@ -76,21 +76,28 @@ def test_no_secret_values_in_guidance_files():
     from bundle_facts import GUIDANCE_GLOBS, REPO_ROOT
 
     offenders = []
-    value_rx = re.compile(r"(?P<name>" + "|".join(SECRET_ENV_VARS) + r")(?P<eq>\s*[:=]\s*)(?P<value>.+)")
+    # An occurrence is acceptable iff the value is a quoted string (possibly a
+    # ${env:VAR} reference inside), a <placeholder>, or a bare ${env:VAR} —
+    # matched at the same position, so trailing prose on the line is ignored.
+    name_alt = "|".join(SECRET_ENV_VARS)
+    occurrence_rx = re.compile(r"(?:" + name_alt + r")\s*[:=]\s*\S")
+    accept_rx = re.compile(
+        r"(?:" + name_alt + r")\s*[:=]\s*("
+        r'"(?:[^"\\]|\\.)*"'                       # quoted string (may hold ${env:VAR})
+        r"|<[^>\n]*>"                              # <placeholder>
+        r"|\$\{env:[^}\n]*\}"                      # bare ${env:VAR}
+        r")"
+    )
     for pattern_glob in GUIDANCE_GLOBS:
         for path in sorted(REPO_ROOT.glob(pattern_glob)):
             if not path.is_file():
                 continue
             text = path.read_text(encoding="utf-8")
-            for m in value_rx.finditer(text):
-                value = m.group("value").strip().strip("'\"").strip()
-                is_placeholder = re.fullmatch(r"<.*>", value)
-                is_env_ref = value.startswith("${env:") and value.endswith("}")
-                if not (is_placeholder or is_env_ref):
-                    line = text[: m.start()].count("\n") + 1
-                    offenders.append(
-                        f"{path.relative_to(REPO_ROOT)}:{line}: {m.group('name')}={m.group('value')}"
-                    )
+            for m in occurrence_rx.finditer(text):
+                if accept_rx.match(text, m.start()):
+                    continue
+                line = text[: m.start()].count("\n") + 1
+                offenders.append(f"{path.relative_to(REPO_ROOT)}:{line}: {text[m.start():m.end()]}")
     assert not offenders, "literal secret values found:\n" + "\n".join(offenders)
 
 
