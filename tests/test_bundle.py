@@ -67,6 +67,26 @@ def test_tool_id_namespace_budget():
         )
 
 
+def test_http_sidecar_mentions_carry_the_warning():
+    # IMPLICIT_SPEC invariant 12: any shipped file that mentions the
+    # streamable-HTTP sidecar must carry the MCP_AUTH_TOKEN warning — the
+    # upstream default (no token) exposes full read/write including deletes.
+    import re
+
+    from bundle_facts import GUIDANCE_GLOBS, REPO_ROOT, SIDECAR_MENTION_PATTERN
+
+    sidecar_rx = re.compile(SIDECAR_MENTION_PATTERN, re.IGNORECASE)
+    offenders = []
+    for pattern_glob in GUIDANCE_GLOBS:
+        for path in sorted(REPO_ROOT.glob(pattern_glob)):
+            if not path.is_file() or path.suffix == ".json":
+                continue
+            text = path.read_text(encoding="utf-8")
+            if sidecar_rx.search(text) and "MCP_AUTH_TOKEN" not in text:
+                offenders.append(str(path.relative_to(REPO_ROOT)))
+    assert not offenders, "sidecar mentions without the auth warning:\n" + "\n".join(offenders)
+
+
 def test_no_secret_values_in_guidance_files():
     # IMPLICIT_SPEC invariant 2: secret env-var NAMES are mandated setup
     # content; their VALUES must be <placeholder> tokens or ${env:VAR}
