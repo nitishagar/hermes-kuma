@@ -11,7 +11,7 @@
 name: hermes-kuma
 repo: https://github.com/nitishagar/hermes-kuma
 sha: <40-hex commit SHA of the release tag — fill before PR>
-description: 'Uptime-Kuma monitoring for agents: the community MCP server for Uptime Kuma v2 (pinned @0.11.18 over npx stdio) with workflow skills for incident review, status digests, and confirmation-gated maintenance. Credentials stay in your host'"'"'s own MCP config (portable Agent Plugins v1 package, mcp.json + skills/; needs Node.js >= 22 on PATH and a Uptime Kuma v2 instance).'
+description: 'Uptime-Kuma monitoring for agents: the community MCP server for Uptime Kuma v2 (pinned @0.11.18 over npx stdio) with workflow skills for incident review, status digests, and confirmation-gated maintenance. Credentials stay in host-native MCP config (portable Agent Plugins v1 package, mcp.json + skills/; needs Node.js >= 22 on PATH and a Uptime Kuma v2 instance).'
 maintainer: nitishagar
 tier: community
 category: tools
