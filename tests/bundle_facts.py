@@ -61,7 +61,6 @@ TROUBLESHOOT_HEADING = "## Troubleshooting the connection"
 
 SETUP_SKILL = "kuma-setup"
 MAINTENANCE_SKILL = "kuma-maintenance"
-SKILL_NAMES = ["kuma-setup", "kuma-incident-review", "kuma-status-digest", "kuma-maintenance"]
 
 # Secret env vars whose values must never appear as literals; the names
 # themselves are mandated setup content (advisor round 1: names != values).
@@ -82,7 +81,7 @@ GUIDANCE_GLOBS = [
     "mcp.json",
     "skills/**/*.md",
     "README.md",
-    "docs/**",
+    "docs/**/*",
     ".github/**/*.y*ml",
 ]
 THOUGHTS_GLOB = "thoughts/**/*.md"

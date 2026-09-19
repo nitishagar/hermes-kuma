@@ -38,36 +38,34 @@ def test_ships_the_pinned_package_with_no_env_map():
     assert "env" not in entry, "shipped mcp.json must not carry an env map"
 
 
-def test_no_unpinned_package_occurrences_in_guidance_files():
+def test_every_package_occurrence_carries_the_exact_pin():
     # IMPLICIT_SPEC invariant 3: every occurrence of the package name across
-    # user-facing guidance files carries the exact version suffix. thoughts/
-    # records quote upstream verbatim and are evidence, not guidance — they
-    # are covered by the leak scan in test_bundle.py instead.
+    # user-facing guidance files carries the exact pinned version — not just
+    # any @version (a drifted @latest or @0.11.19 must fail). thoughts/
+    # records quote upstream verbatim and are evidence, not guidance.
     import re
 
-    from bundle_facts import GUIDANCE_GLOBS, PACKAGE, REPO_ROOT
+    from bundle_facts import GUIDANCE_GLOBS, PACKAGE, PIN, REPO_ROOT
 
     offenders = []
+    pattern = re.compile(re.escape(PACKAGE) + r"(?!@" + re.escape(PIN) + r"\b)")
     for pattern_glob in GUIDANCE_GLOBS:
         for path in sorted(REPO_ROOT.glob(pattern_glob)):
             if not path.is_file():
                 continue
             text = path.read_text(encoding="utf-8")
-            for match in re.finditer(re.escape(PACKAGE), text):
-                tail = text[match.end(): match.end() + 1]
-                if tail != "@":
-                    line = text[: match.start()].count("\n") + 1
-                    offenders.append(f"{path.relative_to(REPO_ROOT)}:{line} (unpinned occurrence)")
-    assert not offenders, "unpinned package references:\n" + "\n".join(offenders)
+            for match in pattern.finditer(text):
+                line = text[: match.start()].count("\n") + 1
+                offenders.append(f"{path.relative_to(REPO_ROOT)}:{line} (not @{PIN})")
+    assert not offenders, "wrongly-pinned package references:\n" + "\n".join(offenders)
 
 
-def test_no_unpinned_older_or_newer_pin_in_mcp_json():
-    # Guard the exact pin value itself, independent of PINNED_PACKAGE.
-    import json as _json
-
-    raw = _json.loads((REPO_ROOT / "mcp.json").read_text(encoding="utf-8"))
-    (entry,) = raw["mcpServers"].values()
-    assert f"@{PIN}" in " ".join(entry["args"])
+def test_ci_pin_drift_step_matches_the_pin():
+    # The CI informational check must target the exact pinned version —
+    # `npm view <pkg>` alone returns `latest` and cannot detect an
+    # unpublished pin (advisor round 1).
+    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert f"npm view {PINNED_PACKAGE} version" in ci
 
 
 def test_schema_declares_canonical_v1_url():

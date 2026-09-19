@@ -87,6 +87,39 @@ def test_http_sidecar_mentions_carry_the_warning():
     assert not offenders, "sidecar mentions without the auth warning:\n" + "\n".join(offenders)
 
 
+def test_no_runtime_code_shipped():
+    # IMPLICIT_SPEC invariant 16: the plugin ships no executable code — only
+    # manifests, skills (Markdown), docs, and validation tooling in tests/CI.
+    executable_dirs = {"tests", ".github"}
+    skip_dirs = {".venv", ".git", ".pytest_cache", "__pycache__", "thoughts"}
+    executable_exts = {".py", ".sh", ".bash", ".js", ".ts", ".mjs", ".cjs", ".exe", ".bat", ".cmd", ".ps1"}
+    offenders = []
+    for path in sorted(REPO_ROOT.rglob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(REPO_ROOT)
+        if set(rel.parts) & skip_dirs:
+            continue
+        if rel.parts[0] in executable_dirs:
+            continue
+        if path.suffix.lower() in executable_exts:
+            offenders.append(str(rel))
+    assert not offenders, "executable files shipped outside tests/CI:\n" + "\n".join(offenders)
+
+
+def test_catalog_template_capabilities_are_empty():
+    # IMPLICIT_SPEC invariant 15: bundle MCP tools are namespaced, never
+    # declared — the upstream validator accepts filled lists, so this is
+    # checked here (review round 1).
+    import yaml
+
+    text = (REPO_ROOT / "docs/catalog-entry.yaml.template").read_text(encoding="utf-8")
+    entry = yaml.safe_load(text.replace("<40-hex commit SHA of the release tag — fill before PR>", "a" * 40))
+    capabilities = entry["capabilities"]
+    assert set(capabilities) == {"provides_tools", "provides_hooks", "provides_middleware", "requires_env"}
+    assert all(capabilities[k] == [] for k in capabilities), f"capabilities must all be empty: {capabilities}"
+
+
 def test_no_secret_values_in_guidance_files():
     # IMPLICIT_SPEC invariant 2: secret env-var NAMES are mandated setup
     # content; their VALUES must be <placeholder> tokens or ${env:VAR}
@@ -96,16 +129,18 @@ def test_no_secret_values_in_guidance_files():
     from bundle_facts import GUIDANCE_GLOBS, REPO_ROOT
 
     offenders = []
-    # An occurrence is acceptable iff the value is a quoted string (possibly a
-    # ${env:VAR} reference inside), a <placeholder>, or a bare ${env:VAR} —
-    # matched at the same position, so trailing prose on the line is ignored.
+    # An occurrence is acceptable iff the value is a <placeholder> or a
+    # ${env:VAR} reference — bare or quoted. A quoted plain literal (e.g.
+    # "hunter2") is NOT acceptable: only env-ref indirection belongs in
+    # guidance (plan: values must be placeholder tokens; review round 1).
     name_alt = "|".join(SECRET_ENV_VARS)
     occurrence_rx = re.compile(r"(?:" + name_alt + r")\s*[:=]\s*\S")
+    env_ref = r"\$\{env:[^}\n]*\}"
     accept_rx = re.compile(
         r"(?:" + name_alt + r")\s*[:=]\s*("
-        r'"(?:[^"\\]|\\.)*"'                       # quoted string (may hold ${env:VAR})
-        r"|<[^>\n]*>"                              # <placeholder>
-        r"|\$\{env:[^}\n]*\}"                      # bare ${env:VAR}
+        r'"(?:\$\{env:[^}\n]*\}|<[^>\n]*>)"'     # quoted env-ref or quoted <placeholder>
+        r"|<[^>\n]*>"                            # bare <placeholder>
+        r"|" + env_ref +                         # bare ${env:VAR}
         r")"
     )
     for pattern_glob in GUIDANCE_GLOBS:

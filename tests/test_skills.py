@@ -94,7 +94,7 @@ def test_degradation_section(name: str):
 
 
 def test_setup_only_content():
-    # Invariants 8, 9, 10, 11, 12, 14: the heavy guidance lives in kuma-setup.
+    # Invariants 8, 9, 11, 12, 14: the heavy guidance lives in kuma-setup.
     text = _skill_text(SETUP_SKILL)
     for pinned in (NO_DESTRUCTIVE_LINE, ENV_FLOW_LINE, HTTP_WARNING_LINE, V2_LINE, ALERTING_LINE):
         assert pinned in text, f"{SETUP_SKILL}: missing pinned line: {pinned[:60]}..."
@@ -102,6 +102,11 @@ def test_setup_only_content():
     ladder = text.split(TROUBLESHOOT_HEADING, 1)[1].split("\n## ", 1)[0]
     steps = [line for line in ladder.splitlines() if line.strip().startswith(("1.", "2.", "3.", "4.", "5."))]
     assert len(steps) >= 4, f"{SETUP_SKILL}: troubleshooting ladder needs >=4 numbered steps, got {len(steps)}"
+    # Invariant 10: the ladder must distinguish the failure modes, not just
+    # have steps — each step names a different root cause (review round 1).
+    lowered = ladder.lower()
+    for term in ("node", "npx", "uptime_kuma_url", "authinvalidtoken"):
+        assert term in lowered, f"{SETUP_SKILL}: troubleshooting ladder omits failure mode {term!r}"
     for other in (n for n in SKILL_NAMES if n != SETUP_SKILL):
         other_text = _skill_text(other)
         for pinned in (NO_DESTRUCTIVE_LINE, ENV_FLOW_LINE, HTTP_WARNING_LINE):

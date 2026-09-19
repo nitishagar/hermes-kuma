@@ -18,7 +18,7 @@ summary — without writing anything to the instance.
 ## Workflow
 
 1. **Start from the summary, not the list.** One `getMonitorSummary` call gives the aggregated state — identify the affected monitor(s) (down or flapping) before any per-monitor read. If the user named the monitor, confirm it exists via the summary rather than listing everything.
-2. **Drill into the affected monitor only.** Pull `getHeartbeats` for that monitor and read the recent status transitions. Heartbeat messages may include credential-scrubbed detail — quote them as-is, do not guess at redacted content.
+2. **Drill into the affected monitor only.** Pull `getHeartbeats` for that monitor (or `listHeartbeats` when you need a bounded recent window across the instance) and read the recent status transitions. Heartbeat messages may include credential-scrubbed detail — quote them as-is, do not guess at redacted content.
 3. **Build the timeline.** For each recent transition: time, old state → new state, and the reported message. Mark the still-open edge (currently down since T, or recovered at T after N minutes).
 4. **Draft the incident summary** for the user to paste: what is affected, when it started, current state, observed pattern (single failure vs flapping vs sustained), and what changed around that time if the heartbeats suggest it.
 5. **Suggest next reads, not actions.** If the pattern looks like a maintenance window collision, point at the maintenance skill. If a monitor should stop alerting during a known change, the user may want a pause — that is a confirmed write, routed to the maintenance skill.

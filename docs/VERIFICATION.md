@@ -1,6 +1,6 @@
 # Manual verification gate (human)
 
-The offline suite cannot observe four things (research doc Verification Surface
+The offline suite cannot observe five things (research doc Verification Surface
 Gaps 1–5). Run these on a machine with Hermes Agent installed, with a real
 Uptime Kuma v2 instance you control.
 
