@@ -76,7 +76,10 @@ secrets and no `env` map — pick a tier:
    with `-t streamable-http`. **Warning: with `MCP_AUTH_TOKEN` unset there is
    no authentication, `ALLOWED_ORIGIN` defaults to `*`, and the endpoint has
    full read/write control including deleting monitors** — always set a token
-   and a narrow origin.
+   and a narrow origin, and never expose the raw endpoint off-host
+   unencrypted (terminate TLS in front or keep it loopback/host-internal).
+
+> Trust note: the upstream server is a single-maintainer community npm package. The exact version pin blocks silent drift, but no integrity digest is possible in this manifest shape — review what you enable.
 
 **2FA users:** use the JWT helper (`npx -p @davidfuchs/mcp-uptime-kuma@0.11.18
 mcp-uptime-kuma-get-jwt <url> <user> <pass>`) and supply

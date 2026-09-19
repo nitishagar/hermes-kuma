@@ -56,6 +56,10 @@ Docker form with `-t streamable-http` and point your host's MCP config at
 
 > HTTP sidecar warning: with MCP_AUTH_TOKEN unset there is no authentication, ALLOWED_ORIGIN defaults to *, and the endpoint has full read/write control including deleting monitors — always set a token and a narrow origin.
 
+Never expose the raw HTTP endpoint off-host unencrypted: the bearer token grants that full delete-capable surface and would cross the wire in cleartext — terminate TLS in front (reverse proxy) or keep the sidecar loopback/host-internal.
+
+When a command example would put a real secret on the command line (the OpenClaw inline `--env` form, the JWT helper's positional password), prefer the env-reference form (`${env:VAR}` from `~/.hermes/.env`) or set it via your host's secret mechanism instead — command-line secrets land in shell history and process lists.
+
 **2FA users:** prefer a JWT — `npx -p @davidfuchs/mcp-uptime-kuma@0.11.18 mcp-uptime-kuma-get-jwt <kuma-url> <username> <password>` — and supply `UPTIME_KUMA_JWT_TOKEN` instead of username/password. Kuma's API keys will NOT work here: they authenticate only Kuma's `/metrics` endpoint, not this server's socket.io login.
 
 ## First connection check

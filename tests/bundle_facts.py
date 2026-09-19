@@ -64,7 +64,12 @@ MAINTENANCE_SKILL = "kuma-maintenance"
 
 # Secret env vars whose values must never appear as literals; the names
 # themselves are mandated setup content (advisor round 1: names != values).
-SECRET_ENV_VARS = ["UPTIME_KUMA_PASSWORD", "UPTIME_KUMA_JWT_TOKEN", "UPTIME_KUMA_2FA_TOKEN"]
+SECRET_ENV_VARS = [
+    "UPTIME_KUMA_PASSWORD",
+    "UPTIME_KUMA_JWT_TOKEN",
+    "UPTIME_KUMA_2FA_TOKEN",
+    "MCP_AUTH_TOKEN",
+]
 
 # A file "mentions the sidecar" iff it matches this (advisor round 1: pinned
 # trigger terms so the HTTP-warning co-occurrence scan cannot silently
