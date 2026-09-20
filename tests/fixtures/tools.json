@@ -4,7 +4,7 @@
     "npm_package": "@davidfuchs/mcp-uptime-kuma",
     "npm_version": "0.11.18",
     "fetched": "2026-09-19",
-    "note": "Verbatim tool registration order from src/server.ts at the pinned version. Classification (read/write/destructive) from the tool descriptions in the same file. Re-vendor deliberately if the pin is bumped, and re-check the classification."
+    "note": "Verbatim tool registration order from src/server.ts at the pinned version. Classification (read/write/destructive) from the tool descriptions in the same file. Re-vendor deliberately if the pin is bumped, and re-check the classification. The upstream README's Available Tools table lists ~22 and omits the Docker-host group; src/server.ts registration order is canonical (31 tools, re-extracted byte-identical in PLAN_VALIDATION)."
   },
   "longest_tool_name": "getMaintenanceWindows",
   "tools": [

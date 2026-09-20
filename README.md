@@ -95,6 +95,8 @@ stdio server would be unreachable from Meta's cloud in any case; the
 reachable shape is the tier-3 HTTP sidecar — which carries the security
 warning above.
 
+Muse Code (Meta's terminal coding agent) is a separate product that documents its own MCP support (dev.meta.ai/docs/muse-code) — this note covers only the Muse assistant's Connector Platform.
+
 ## Development
 
 ```bash

@@ -8,7 +8,7 @@ Uptime Kuma v2 instance you control.
 
 ```bash
 cd /path/to/hermes-kuma
-hermes plugins validate --install-deps .
+hermes plugins validate --install-deps .   # documented on the developer-guide page + used by the plugin-catalog CI; absent from the CLI reference page — if your build lacks it, the doctor gate below is the exit-0 criterion
 hermes plugins doctor . --ci        # must exit 0
 hermes plugins install . --no-enable
 hermes plugins enable kuma
