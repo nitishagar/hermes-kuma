@@ -70,8 +70,8 @@ secrets and no `env` map — pick a tier:
 2. **Best-effort: ambient environment.** Hosts that pass their own
    environment to spawned MCP servers need nothing extra — export the
    `UPTIME_KUMA_*` variables before starting the host and verify with a cheap
-   read. (OpenClaw's docs imply this behavior; Hermes does not document it —
-   don't rely on it unverified.)
+   read. (Hermes and OpenClaw both filter ambient variables for spawned stdio
+   servers, so Tier 2 does not work on either — use Tier 1 there.)
 3. **HTTP sidecar** (VPS/remote agents): the server's documented Docker form
    with `-t streamable-http`. **Warning: with `MCP_AUTH_TOKEN` unset there is
    no authentication, `ALLOWED_ORIGIN` defaults to `*`, and the endpoint has

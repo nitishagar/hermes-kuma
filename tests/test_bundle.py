@@ -53,9 +53,13 @@ def test_vendored_tool_inventory_is_wellformed():
 def test_tool_id_namespace_budget():
     # IMPLICIT_SPEC invariant 4. Hosts register agent-plugin MCP tools as:
     #   mcp__agent_plugin_<name>_<hash>__<server>__<tool>   (<= 64 chars)
-    # The hash length is host-dependent: 8 chars observed in Hermes (snyk
-    # README, `mcp__agent_plugin_snyk_8cb0f11d__sn__<tool>`); OpenClaw's
-    # exposed-name format is unevidenced, so 12 chars is pure conservatism.
+    # The hash length is host-dependent: 8 chars in Hermes (current source:
+    # `agent_plugin_<name>_<8hex>__<server>`, hermes-agent
+    # tests/tools/test_mcp_tool.py; also the snyk README observation
+    # `mcp__agent_plugin_snyk_8cb0f11d__sn__<tool>`); OpenClaw exposes the
+    # short `server__tool` form (docs.openclaw.ai/plugins/bundles "Tool
+    # naming"; no hash, no budget pressure), so 12 chars stays as pure
+    # conservatism on the Hermes leg only.
     name = plugin["name"]
     server_key = next(iter(mcp["mcpServers"]))
     longest = tools["longest_tool_name"]

@@ -44,11 +44,13 @@ mcp_servers:
 OpenClaw example: `openclaw mcp add kuma --command npx --arg -y --arg @davidfuchs/mcp-uptime-kuma@0.11.18 --env UPTIME_KUMA_URL=http://your-kuma-host:3001 --env UPTIME_KUMA_USERNAME=<your username> --env UPTIME_KUMA_PASSWORD=<your password>` (OpenClaw's stdio env safety filter blocks interpreter/loader keys; the `UPTIME_KUMA_*` names pass).
 
 **Tier 2 — best-effort: ambient environment.** If your host passes its own
-environment to spawned MCP servers (OpenClaw's docs imply this; Hermes does
-not document it), exporting `UPTIME_KUMA_URL` / `UPTIME_KUMA_USERNAME` /
-`UPTIME_KUMA_PASSWORD` before starting the host is enough — the bundled
-server needs no extra configuration. Verify with a cheap read (Tier 3 check
-below) before relying on it.
+environment to spawned MCP servers, exporting `UPTIME_KUMA_URL` /
+`UPTIME_KUMA_USERNAME` / `UPTIME_KUMA_PASSWORD` before starting the host is
+enough — the bundled server needs no extra configuration. Do NOT count on
+this for Hermes or OpenClaw: both filter ambient variables for spawned stdio
+servers (Hermes keeps a safe-baseline allowlist; OpenClaw inherits only
+HOME/LOGNAME/PATH/SHELL/TERM/USER), so on those hosts Tier 2 behaves as if
+unset — use Tier 1. Verify with a cheap read before relying on it anywhere.
 
 **Tier 3 — HTTP sidecar (VPS/remote agents).** Run the server's documented
 Docker form with `-t streamable-http` and point your host's MCP config at
