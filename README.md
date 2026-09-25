@@ -8,7 +8,7 @@ curated workflow skills. No runtime code.
 Works in **Hermes Agent and OpenClaw from day one** (both load Agent Plugins
 bundles natively), plus any MCP-capable host.
 
-Documentation: **https://kuma.applair.in**
+Documentation: **https://nitishagar.github.io/hermes-kuma/**
 
 The bundle's value is the safety and workflow layer on top of a read-write
 upstream: the server exposes 31 tools including 5 permanent, ungated deletes —

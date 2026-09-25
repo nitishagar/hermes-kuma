@@ -1,4 +1,4 @@
-"""Static docs-site checks (site/ -> GitHub Pages at kuma.applair.in).
+"""Static docs-site checks (site/ -> default GitHub Pages hosting).
 
 The site is dependency-free static HTML+CSS (no JS: the no-runtime-code
 invariant forbids .js outside tests/CI). These checks run in the offline
@@ -14,7 +14,6 @@ from bundle_facts import REPO_ROOT, SECRET_ENV_VARS
 
 SITE = REPO_ROOT / "site"
 REQUIRED_PAGES = ["index.html", "install.html", "credentials.html", "skills.html"]
-EXPECTED_CNAME = "kuma.applair.in"
 
 
 class _LinkCollector(HTMLParser):
@@ -41,7 +40,7 @@ def test_site_pages_and_assets_exist():
     for name in REQUIRED_PAGES:
         assert (SITE / name).is_file(), f"site/{name} missing"
     assert (SITE / "assets" / "style.css").is_file(), "site/assets/style.css missing"
-    assert (SITE / "CNAME").read_text(encoding="utf-8").strip() == EXPECTED_CNAME
+    assert not (SITE / "CNAME").exists(), "site/CNAME present — default github.io hosting, no custom domain"
 
 
 def test_site_has_no_executable_content():
