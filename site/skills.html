@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skills — hermes-kuma</title>
+  <meta name="description" content="The four hermes-kuma workflow skills: setup, incident review, status digest, and confirmation-gated maintenance.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html">hermes-<span>kuma</span></a>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="credentials.html">Credentials</a>
+    <a href="skills.html" aria-current="page">Skills</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Skills</h1>
+  <p class="lede">Four workflow skills. They share one discipline: read-first, never the delete tools, and explicit confirmation before any write.</p>
+
+  <div class="note">
+    <p><strong>Read-first:</strong> these workflows use read tools by default; the only writes they may ever perform are pause, resume, and maintenance windows — and only after you explicitly confirm the specific action.</p>
+    <p><strong>Never the deletes:</strong> deleteMonitor, deleteNotification, deleteDockerHost, deleteTag, deleteStatusPage are permanent and have no upstream confirmation gate; this bundle's workflows do not use them.</p>
+  </div>
+
+  <section class="skill">
+    <h2>kuma-setup</h2>
+    <p class="meta">Use when connecting, configuring, authenticating, or debugging Uptime Kuma access.</p>
+    <p>Credential tiers (see <a href="credentials.html">Credentials</a>), the first-connection check, the troubleshooting ladder (Node version → cold npx cache → missing env vars → wrong credentials → unreachable instance), and the hard limits: Uptime Kuma v2 only, alerting stays in Kuma's own channels.</p>
+  </section>
+
+  <section class="skill">
+    <h2>kuma-incident-review</h2>
+    <p class="meta">Use when something is down or degraded and you need to understand what happened.</p>
+    <p>Starts from the monitor summary (“how is everything?”), pulls the heartbeat timeline for the affected monitor, and drafts a structured incident summary. Summary-first: no per-monitor crawling to answer a fleet question.</p>
+  </section>
+
+  <section class="skill">
+    <h2>kuma-status-digest</h2>
+    <p class="meta">Use for a periodic fleet-wide uptime digest.</p>
+    <p>Produces overall posture from one summary read — what's up, down, or paused — annotated with scheduled maintenance windows. Same read discipline as incident review, tuned for reporting rather than diagnosis.</p>
+  </section>
+
+  <section class="skill">
+    <h2>kuma-maintenance</h2>
+    <p class="meta">Use to pause/resume monitoring or schedule downtime for planned work.</p>
+    <p>The only skill with a write surface, and every write needs your explicit yes after the agent restates the exact action:</p>
+    <ol>
+      <li><strong>Pause a monitor</strong> — for planned work or noise suppression. A paused monitor stops alerting entirely.</li>
+      <li><strong>Resume a monitor</strong> — then watch the first heartbeat and report whether it's actually back.</li>
+      <li><strong>Schedule a maintenance window</strong> — monitors, start, duration/strategy, title; duplicates get called out instead of created.</li>
+    </ol>
+    <p>Everything else write-like (create/update monitors, notifications, tags, docker hosts, status pages) routes you to the Kuma UI — that is the correct answer, not a refusal to be worked around.</p>
+  </section>
+
+  <h2>When MCP is unavailable</h2>
+  <p>The skills double as guides: follow their steps against the Kuma web UI (or a pasted status page) and produce the same structured output. The agent says plainly that live reads are unavailable and never invents monitor states; writes are impossible without the connection, so confirmed-but-unapplied actions get queued explicitly instead of simulated.</p>
+</main>
+
+<footer><div class="wrap">
+  <p>hermes-kuma · MIT · <a href="https://github.com/nitishagar/hermes-kuma">github.com/nitishagar/hermes-kuma</a></p>
+</div></footer>
+</body>
+</html>

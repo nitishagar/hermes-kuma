@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>hermes-kuma — Uptime Kuma monitoring for AI agents</title>
+  <meta name="description" content="An Agent Plugins bundle wrapping a pinned Uptime Kuma MCP server with curated workflow skills for Hermes and OpenClaw.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html">hermes-<span>kuma</span></a>
+  <nav>
+    <a href="index.html" aria-current="page">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="credentials.html">Credentials</a>
+    <a href="skills.html">Skills</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Uptime Kuma monitoring for AI agents</h1>
+  <p class="lede">A portable Agent Plugins bundle: one pinned MCP server for Uptime Kuma v2 plus four workflow skills with a safety layer on top of a read-write upstream.</p>
+
+  <p>The server exposes 31 tools, including 5 permanent, ungated deletes. The skills enforce summary-first reads, never instruct the delete tools, and gate the only sanctioned writes — pause, resume, maintenance windows — behind your explicit confirmation. Alerting stays with Uptime Kuma's own notification channels (90+ services); this bundle reviews and maintains, it does not page you.</p>
+
+  <h2>Install</h2>
+  <h3>Hermes Agent</h3>
+<pre><code>hermes plugins install nitishagar/hermes-kuma --no-enable
+hermes plugins enable kuma</code></pre>
+  <h3>OpenClaw</h3>
+<pre><code>openclaw plugins install git:github.com/nitishagar/hermes-kuma</code></pre>
+  <h3>Any MCP-capable host</h3>
+  <p>Point your host's MCP client at the pinned stdio server (<code>npx -y @davidfuchs/mcp-uptime-kuma@0.11.18</code>) and load the <code>skills/</code> directories as agent skills. Full steps on the <a href="install.html">Install</a> page.</p>
+
+  <h2>What's inside</h2>
+  <ul>
+    <li><code>plugin.json</code> — Agent Plugins v1.0.0 manifest (<code>kuma</code>)</li>
+    <li><code>mcp.json</code> — one stdio server, version-pinned, no secrets, no env map</li>
+    <li><code>kuma-setup</code> — credential tiers, troubleshooting, hard limits</li>
+    <li><code>kuma-incident-review</code> — summary → heartbeat timeline → draft incident summary</li>
+    <li><code>kuma-status-digest</code> — fleet digest from one summary read</li>
+    <li><code>kuma-maintenance</code> — confirmation-gated pause / resume / maintenance windows</li>
+  </ul>
+
+  <h2>Requirements</h2>
+  <ul>
+    <li>Uptime Kuma v2 (stable 2.5.x; the upstream server does not support v1)</li>
+    <li>Node.js ≥ 22 on <code>PATH</code></li>
+  </ul>
+
+  <div class="note">
+    <p><strong>Credentials live outside the bundle.</strong> The server reads <code>UPTIME_KUMA_URL</code> plus your login or JWT from host-native MCP configuration — see <a href="credentials.html">Credentials</a>.</p>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <p>hermes-kuma · MIT · <a href="https://github.com/nitishagar/hermes-kuma">github.com/nitishagar/hermes-kuma</a></p>
+  <p>Upstream server: <code>@davidfuchs/mcp-uptime-kuma@0.11.18</code> (pinned) · independent community project, not affiliated with Uptime Kuma.</p>
+</div></footer>
+</body>
+</html>

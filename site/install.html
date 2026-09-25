@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Install — hermes-kuma</title>
+  <meta name="description" content="Requirements and install steps for the hermes-kuma bundle on Hermes, OpenClaw, and any MCP-capable host.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="index.html">hermes-<span>kuma</span></a>
+  <nav>
+    <a href="index.html">Overview</a>
+    <a href="install.html" aria-current="page">Install</a>
+    <a href="credentials.html">Credentials</a>
+    <a href="skills.html">Skills</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Install</h1>
+
+  <h2>Requirements</h2>
+  <ul>
+    <li><strong>Uptime Kuma v2</strong> (stable 2.5.x). The upstream server does not support v1.</li>
+    <li><strong>Node.js ≥ 22</strong> on <code>PATH</code>. The server launches via <code>npx -y</code>, and npx only <em>warns</em> about the engines requirement — an old Node fails confusingly. Check with <code>node --version</code>.</li>
+  </ul>
+
+  <h2>Hermes Agent</h2>
+<pre><code>hermes plugins install nitishagar/hermes-kuma --no-enable
+hermes plugins enable kuma</code></pre>
+  <p>After enabling, tools appear under the <code>mcp__agent_plugin_kuma_…</code> namespace and the four <code>kuma-*</code> skills load as agent skills. (Install takes a catalog name, Git URL, or <code>owner/repo</code> — a local path is rejected, so push first when testing your own fork.)</p>
+
+  <h2>OpenClaw</h2>
+<pre><code>openclaw plugins install git:github.com/nitishagar/hermes-kuma</code></pre>
+  <p>OpenClaw detects the Agent Plugins layout (<code>plugin.json</code> marker) and maps skills plus the <code>ku</code> stdio MCP server. Tools register in the short <code>ku__&lt;tool&gt;</code> form.</p>
+
+  <h2>Any MCP-capable host</h2>
+  <p>Register a stdio MCP server with this command, then load the repo's <code>skills/</code> directories as agent skills:</p>
+<pre><code>npx -y @davidfuchs/mcp-uptime-kuma@0.11.18</code></pre>
+
+  <h2>Verify</h2>
+  <ol>
+    <li>Configure credentials (see <a href="credentials.html">Credentials</a>).</li>
+    <li>Ask for a monitor summary — the incident-review skill starts with one.</li>
+    <li>If tools appear but error, work the troubleshooting ladder in <code>kuma-setup</code> (Node version, cold npx cache, missing env vars, wrong credentials, unreachable instance).</li>
+    <li>If no <code>kuma</code>/<code>ku</code> tools appear at all, the plugin may not be enabled or the host blocked the spawn.</li>
+  </ol>
+
+  <div class="note">
+    <p><strong>Offline cold cache:</strong> the first <code>npx</code> run downloads the package. On a machine that will be offline, pre-warm once while online: <code>npx -y @davidfuchs/mcp-uptime-kuma@0.11.18 --help</code>.</p>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <p>hermes-kuma · MIT · <a href="https://github.com/nitishagar/hermes-kuma">github.com/nitishagar/hermes-kuma</a></p>
+</div></footer>
+</body>
+</html>
